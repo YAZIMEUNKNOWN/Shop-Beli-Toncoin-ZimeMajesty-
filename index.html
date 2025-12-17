@@ -65,7 +65,6 @@
       color: #e5e7eb;
     }
     input[readonly] {
-      background: #020617;
       opacity: 0.7;
     }
     button {
@@ -92,11 +91,10 @@
       background: #020617;
       border: 1px solid #1e40af;
       color: #93c5fd;
+      display: none;
     }
     a button {
       width: 100%;
-      padding: 14px;
-      margin-top: 0;
     }
     .terms {
       margin-top: 24px;
@@ -106,93 +104,90 @@
       border-radius: 8px;
       color: #c7d2fe;
       font-size: 14px;
-      line-height: 1.5;
     }
     .terms h3 {
-      margin-top: 0;
       color: #93c5fd;
+      margin-top: 0;
     }
   </style>
 </head>
 <body>
-  <header>
-    <h1> Beli TON Coin</h1>
-  </header>
-  <main>
-    <h2>Formulir Pembelian</h2>
-    <p>Silahkan masukkan nominal pembelian Toncoin.</p>
-    <form id="buyForm">
-      <label for="buyAmount">Jumlah TON</label>
-      <input type="number" id="buyAmount" value="" min="1" step="1" required />
-      <label for="totalPrice">Total IDR</label>
-      <input type="text" id="totalPrice" value="29000" readonly />
-      <label for="proof">Upload Bukti Pembayaran</label>
-      <input type="file" id="proof" accept="image/*" required />
 
-      <button type="submit" id="submitBtn">Submit Pembelian</button>
-      <a href="https://t.me/sybayar" target="_blank"><button type="button">PAYMENT</button></a>
-      <a href="https://t.me/ratetons" target="_blank"><button type="button">CHANNEL</button></a>
+<header>
+  <h1>Beli TON Coin</h1>
+</header>
 
-      <div id="notif" style="display:none;"></div>
-    </form>
+<main>
+  <h2>Formulir Pembelian</h2>
+  <p>Masukkan jumlah TON yang ingin dibeli.</p>
 
-    <div class="terms">
-      <h3>Syarat & Ketentuan</h3>
-      <p>1. Pembelian TON Coin bersifat final dan tidak dapat dibatalkan setelah dikonfirmasi oleh admin.</p>
-      <p>2. Pastikan bukti pembayaran yang diunggah valid dan jelas agar proses verifikasi dapat dilakukan dengan cepat.</p>
-      <p>3. Admin berhak menolak transaksi jika ditemukan indikasi penipuan atau ketidaksesuaian data.</p>
-      <p>4. Pengguna bertanggung jawab penuh atas kebenaran data yang dikirim.</p>
-      <p>5. Dengan melakukan submit, pengguna menyetujui semua syarat dan ketentuan yang berlaku.</p>
-    </div>
-  </main>
+  <form id="buyForm">
+    <label for="buyAmount">Jumlah TON</label>
+    <input type="number" id="buyAmount" min="1" step="1" required>
 
-  <script>
-    const buyForm = document.getElementById('buyForm');
-    const buyAmount = document.getElementById('buyAmount');
-    const totalPrice = document.getElementById('totalPrice');
-    const notif = document.getElementById('notif');
-    const submitBtn = document.getElementById('submitBtn');
+    <label for="totalPrice">Total IDR</label>
+    <input type="text" id="totalPrice" value="29000" readonly>
 
-    buyAmount.addEventListener('input', () => {
-      totalPrice.value = buyAmount.value * 29000;
-    });
+    <button type="submit" id="submitBtn">Submit Pembelian</button>
 
-    buyForm.addEventListener('submit', function (e) {
-      e.preventDefault();
-      notif.style.display = 'block';
-      notif.style.background = '#fff7ed';
-      notif.style.border = '1px solid #fed7aa';
-      notif.style.color = '#9a3412';
-      notif.textContent = 'Permintaan sedang diproses, mohon tunggu...';
+    <a href="https://t.me/sybayar" target="_blank">
+      <button type="button">PAYMENT</button>
+    </a>
 
-      submitBtn.disabled = true;
-      submitBtn.textContent = 'Memproses...';
+    <a href="https://t.me/ratetons" target="_blank">
+      <button type="button">CHANNEL</button>
+    </a>
 
-      const amountValue = buyAmount.value;
-      const priceValue = totalPrice.value;
-      const proofFile = document.getElementById('proof').files[0];
+    <div id="notif"></div>
+  </form>
 
-      // Membuat pesan Telegram
-      const message = `Pembelian TON Coin
-Jumlah TON : ${amountValue}
-Total IDR : ${priceValue}
-Bukti pembayaran : ${proofFile ? proofFile.name : 'Terlampir'}`;
+  <div class="terms">
+    <h3>Syarat & Ketentuan</h3>
+    <p>1. Pembelian TON Coin bersifat final.</p>
+    <p>2. Harga bersifat tetap sesuai rate yang tertera.</p>
+    <p>3. Admin berhak menolak transaksi yang tidak sesuai.</p>
+    <p>4. Pengguna bertanggung jawab atas data yang dikirim.</p>
+    <p>5. Dengan menekan submit, pengguna menyetujui seluruh ketentuan.</p>
+  </div>
+</main>
 
-      // Membuka Telegram dengan pesan sudah terisi
-      const telegramUrl = `https://t.me/yaeetim?text=${encodeURIComponent(message)}`;
-      window.open(telegramUrl, '_blank');
+<script>
+  const buyAmount = document.getElementById('buyAmount');
+  const totalPrice = document.getElementById('totalPrice');
+  const buyForm = document.getElementById('buyForm');
+  const notif = document.getElementById('notif');
+  const submitBtn = document.getElementById('submitBtn');
 
-      setTimeout(() => {
-        notif.style.background = '#ecfeff';
-        notif.style.border = '1px solid #67e8f9';
-        notif.style.color = '#0e7490';
-        notif.textContent = 'Permintaan pembelian berhasil dikirim. Admin @yaeetim akan melakukan verifikasi.';
-        submitBtn.disabled = false;
-        submitBtn.textContent = 'Submit Pembelian';
-        buyForm.reset();
-        totalPrice.value = 29000;
-      }, 2000);
-    });
-  </script>
+  buyAmount.addEventListener('input', () => {
+    totalPrice.value = buyAmount.value * 29000;
+  });
+
+  buyForm.addEventListener('submit', function(e) {
+    e.preventDefault();
+
+    const amount = buyAmount.value;
+    const price = totalPrice.value;
+
+    notif.style.display = 'block';
+    notif.textContent = 'Mengalihkan ke Telegram...';
+
+    const message = `Pembelian TON Coin
+
+Jumlah TON : ${amount}
+Total IDR  : ${price}
+
+Silakan lakukan verifikasi pembayaran.`;
+
+    const telegramUrl = `https://t.me/yaeetim?text=${encodeURIComponent(message)}`;
+    window.open(telegramUrl, '_blank');
+
+    submitBtn.disabled = true;
+
+    setTimeout(() => {
+      submitBtn.disabled = false;
+    }, 1500);
+  });
+</script>
+
 </body>
 </html>
